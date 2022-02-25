@@ -14,7 +14,7 @@ Tutorials from https://www.pulumi.com/learn
 
 ### Docker on OSX M1
 
-I'm using https://github.com/abiosoft/colima as a Docker VM. If so, you must update the pulumi docker host before running any command.
+Using https://github.com/abiosoft/colima, you must update the pulumi docker host before running any command.
 
 ```bash
 # Start Colima
@@ -24,7 +24,7 @@ colima start
 docker context ls
 
 # Copy/paste docker endpoint from colima context and set pulumi docker host
-pulumi config set docker:host <COLIMA_DOCKER_DAEMON>
+pulumi config set docker:host "unix://${HOME}/.colima/docker.sock"
 ```
 
 _See https://www.pulumi.com/registry/packages/docker/installation-configuration/#configuring-the-provider_
