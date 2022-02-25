@@ -1,0 +1,2 @@
+config:
+  docker:host: unix:///Users/thomasperron/.colima/docker.sock

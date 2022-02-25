@@ -3,3 +3,6 @@
 
 # VSCode
 .history/
+
+# npm
+**/node_modules/
