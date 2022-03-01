@@ -3,6 +3,9 @@ config:
   my-first-app:backend_port: "3000"
   my-first-app:database: cart
   my-first-app:frontend_port: "3001"
-  my-first-app:mongo_host: mongodb://mongo:27017
+  my-first-app:mongo_host: mongo
+  my-first-app:mongo_password:
+    secure: AAABAKi92lJslLyQb2r2fPhhh9afXuVGCFwuFTZMhGtc64C4wdo=
   my-first-app:mongo_port: "27017"
+  my-first-app:mongo_username: admin
   my-first-app:node_environment: development

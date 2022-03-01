@@ -7,6 +7,8 @@ const frontendPort = config.requireNumber('frontend_port');
 const backendPort = config.requireNumber('backend_port');
 const mongoPort = config.requireNumber('mongo_port');
 const mongoHost = config.require('mongo_host'); // Note that strings are the default, so it's not `config.requireString`, just `config.require`.
+const mongoUsername = config.require('mongo_username');
+export const mongoPassword = config.requireSecret('mongo_password');
 const database = config.require('database');
 const nodeEnvironment = config.require('node_environment');
 
@@ -57,6 +59,10 @@ const mongoContainer = new docker.Container('mongoContainer', {
             aliases: ['mongo'],
         },
     ],
+    envs: [
+        `MONGO_INITDB_ROOT_USERNAME=${mongoUsername}`,
+        pulumi.interpolate`MONGO_INITDB_ROOT_PASSWORD=${mongoPassword}`,
+    ],
 });
 
 // create the backend container!
@@ -70,8 +76,8 @@ const backendContainer = new docker.Container('backendContainer', {
         },
     ],
     envs: [
-        `DATABASE_HOST=${mongoHost}`,
-        `DATABASE_NAME=${database}`,
+        pulumi.interpolate`DATABASE_HOST=mongodb://${mongoUsername}:${mongoPassword}@${mongoHost}:${mongoPort}`,
+        `DATABASE_NAME=${database}?authSource=admin`,
         `NODE_ENV=${nodeEnvironment}`,
     ],
     networksAdvanced: [
@@ -96,7 +102,7 @@ const dataSeedContainer = new docker.Container('dataSeedContainer', {
     command: [
         'sh',
         '-c',
-        'mongoimport --host mongo --db cart --collection products --type json --file /home/products.json --jsonArray',
+        pulumi.interpolate`mongoimport --host ${mongoHost} -u ${mongoUsername} -p ${mongoPassword} --authentication admin --db cart --collection products --type json --file /home/products.json --jsonArray`,
     ],
     networksAdvanced: [
         {
@@ -125,3 +131,5 @@ const frontendContainer = new docker.Container('frontendContainer', {
         },
     ],
 });
+
+export const url = pulumi.interpolate`http://localhost:${frontendPort}`;
